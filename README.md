@@ -1,4 +1,4 @@
-# CIN Testing
+# XSIS Testing
 
 This project is a testing API for XSIS Mitra Utama
 
