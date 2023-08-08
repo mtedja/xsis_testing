@@ -1,0 +1,27 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import path from 'path';
+import appRouter from './routes/router';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 7000;
+
+const swaggerFile = path.join(__dirname, 'docs', 'swagger.json');
+const swaggerSpec = require(swaggerFile);
+
+app.use(express.json());
+
+app.use('/api', appRouter);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.listen(PORT, () => {
+    try {
+        console.log(`Server is running on port ${PORT}`);
+    } catch (error) {
+        console.error('Failed to running server:', error);
+    }
+});
