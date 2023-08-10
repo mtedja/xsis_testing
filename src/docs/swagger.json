@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My API",
+        "title": "XSIS API",
         "version": "1.0.0",
         "description": "API documentation"
     },
@@ -11,20 +11,147 @@
             "description": "Endpoints welcome message"
         },
         {
-            "name": "User",
-            "description": "Endpoints user management"
+            "name": "Movie",
+            "description": "Endpoints movie management"
         }
     ],
     "paths": {
-        "/api/": {
+        "/api/movies": {
             "get": {
-                "summary": "Get welcome message",
+                "summary": "List all movies",
                 "tags": [
-                    "Welcome"
+                    "Movie"
                 ],
                 "responses": {
                     "200": {
-                        "description": "Welcome message response"
+                        "description": "List of movies response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new movie",
+                "tags": [
+                    "Movie"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "rating": {
+                                        "type": "number"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Movie create response"
+                    }
+                }
+            }
+        },
+        "/api/movies/{id}": {
+            "get": {
+                "summary": "Get details of a movie",
+                "tags": [
+                    "Movie"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Movie ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Movie details response"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update a movie",
+                "tags": [
+                    "Movie"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Movie ID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "rating": {
+                                        "type": "number"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Movie update response"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a movie",
+                "tags": [
+                    "Movie"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Movie ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Movie delete response"
                     }
                 }
             }

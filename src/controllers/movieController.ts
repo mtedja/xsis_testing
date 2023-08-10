@@ -1,43 +1,47 @@
 import { Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 import Joi from 'joi';
 import { sendSuccessResponse, sendErrorResponse } from '../utils/response';
 
-import { Movies } from '../models/movies';
+const prisma = new PrismaClient();
 
-const MovieSchema = Joi.object({
+const movieSchema = Joi.object({
     title: Joi.string().required(),
-    description: Joi.string().required(),
+    description: Joi.string().allow(''),
     rating: Joi.number().required(),
-    image: Joi.string().required(),
+    image: Joi.string().allow(''),
 });
 
-export const getAllMovie = async (req: Request, res: Response) => {
+export const listMovie = async (req: Request, res: Response) => {
     try {
-        const allMovie: Movies[] = await Movies.findall();
+        const movies = await prisma.movies.findMany();
 
-        sendSuccessResponse(res, 200, '', allMovie);
+        sendSuccessResponse(res, 200, '', movies);
     } catch (error) {
-        console.error('Failed to get all movie:', error);
-        sendErrorResponse(res, 500, 'Failed to get all movie.', error);
+        console.error('Failed to fetch movies:', error);
+        sendErrorResponse(res, 500, 'Failed to fetch movies.', error);
     }
 }
 
-export const getMovieById = async (req: Request, res: Response) => {
+export const detailMovie = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        const movie: Movies | null = await Movies.findUnique(id);
+        const movie = await prisma.movies.findUnique({
+            where: {
+                id: parseInt(id)
+            }
+        });
 
-        await Movies.destroy({ where: { id } });
         sendSuccessResponse(res, 200, '', movie);
     } catch (error) {
-        console.error('Failed to get movie:', error);
-        sendErrorResponse(res, 500, 'Failed to get movie.', error);
+        console.error('Failed to fetch movie details:', error);
+        sendErrorResponse(res, 500, 'Failed to fetch movie details.', error);
     }
 }
 
 export const createMovie = async (req: Request, res: Response) => {
-    const { error, value } = MovieSchema.validate(req.body);
+    const { error, value } = movieSchema.validate(req.body);
 
     if (error) {
         sendErrorResponse(res, 400, error.details[0].message);
@@ -47,14 +51,16 @@ export const createMovie = async (req: Request, res: Response) => {
     const { title, description, rating, image } = value;
 
     try {
-        const createmovies = await Movies.create({
-            title,
-            description,
-            rating,
-            image,
-        })
+        const movie = await prisma.movies.create({
+            data: {
+                title,
+                description,
+                rating,
+                image
+            }
+        });
 
-        sendSuccessResponse(res, 201, 'Movie created successfully', createmovies);
+        sendSuccessResponse(res, 201, 'Movie created successfully', movie);
     } catch (error) {
         console.error('Failed to create movie:', error);
         sendErrorResponse(res, 500, 'Failed to create movie.', error);
@@ -62,7 +68,8 @@ export const createMovie = async (req: Request, res: Response) => {
 }
 
 export const updateMovie = async (req: Request, res: Response) => {
-    const { error, value } = MovieSchema.validate(req.body);
+    const { id } = req.params;
+    const { error, value } = movieSchema.validate(req.body);
 
     if (error) {
         sendErrorResponse(res, 400, error.details[0].message);
@@ -70,21 +77,24 @@ export const updateMovie = async (req: Request, res: Response) => {
     }
 
     const { title, description, rating, image } = value;
-    const { id } = req.params;
 
     try {
-        await Movies.update({
-            title,
-            description,
-            rating,
-            image,
-        }, { where: { id } });
+        const updatedMovie = await prisma.movies.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                title,
+                description,
+                rating,
+                image
+            }
+        });
 
-        const updateMovie: Movies | null = await Movies.findUnique(id);
-        sendSuccessResponse(res, 200, 'Movie deleted successfully', updateMovie);
+        sendSuccessResponse(res, 200, 'Movie updated successfully', updatedMovie);
     } catch (error) {
-        console.error('Failed to delete movie:', error);
-        sendErrorResponse(res, 500, 'Failed to delete movie.', error);
+        console.error('Failed to update movie:', error);
+        sendErrorResponse(res, 500, 'Failed to update movie.', error);
     }
 }
 
@@ -92,10 +102,13 @@ export const deleteMovie = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        const deleteMovie: Movies | null = await Movies.findUnique(id);
+        const deletedMovie = await prisma.movies.delete({
+            where: {
+                id: parseInt(id)
+            }
+        });
 
-        await Movies.destroy({ where: { id } });
-        sendSuccessResponse(res, 200, 'Movie deleted successfully', deleteMovie);
+        sendSuccessResponse(res, 200, 'Movie deleted successfully', deletedMovie);
     } catch (error) {
         console.error('Failed to delete movie:', error);
         sendErrorResponse(res, 500, 'Failed to delete movie.', error);

@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
 interface ApiResponse {
-    status: number;
+    status: string;
     message: string;
     data?: any;
     error?: any;
@@ -9,7 +9,7 @@ interface ApiResponse {
 
 export const sendSuccessResponse = (res: Response, status: number, message = 'Success', data?: any): void => {
     const response: ApiResponse = {
-        status: 1,
+        status: "success",
         message,
     };
 
@@ -22,7 +22,7 @@ export const sendSuccessResponse = (res: Response, status: number, message = 'Su
 
 export const sendErrorResponse = (res: Response, status: number, message: string, error?: any): void => {
     const response: ApiResponse = {
-        status: 0,
+        status: "error",
         message,
     };
 
