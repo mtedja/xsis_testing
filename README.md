@@ -1,6 +1,6 @@
 # XSIS Testing
 
-This project is a testing API for Cipta Integrasi Nusantara
+This project is a testing API for PT XSIS
 
 ## Prerequisites
 
