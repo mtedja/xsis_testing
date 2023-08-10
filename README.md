@@ -43,7 +43,7 @@ To get the project up and running locally, follow these steps:
     ```bash
     npm run dev
 
-    This will start the development server. The project will be accessible at http://localhost:7000.
+This will start the development server. The project will be accessible at http://localhost:7000.
 
 6. **Test the Project:**
 
@@ -52,4 +52,4 @@ To get the project up and running locally, follow these steps:
     ```bash
     npm run test
 
-    This will test the apps.
+This will test the apps.
