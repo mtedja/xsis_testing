@@ -1,6 +1,6 @@
 # XSIS Testing
 
-This project is a testing API for PT XSIS
+This project is a testing API for PT XSIS Mitra Utama
 
 ## Prerequisites
 
